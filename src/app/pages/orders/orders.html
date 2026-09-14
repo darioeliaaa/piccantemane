@@ -1,0 +1,64 @@
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--hazard">Area riservata · Negoziante</p>
+    <h1 class="display--page" style="margin-top: 16px; font-size: clamp(36px, 6vw, 60px)">Registro Ordini.</h1>
+    <p class="prose" style="margin-top: 18px">
+      Il pannello che il negoziante userebbe per seguire ogni spedizione dal momento
+      dell'ordine alla consegna. Dati d'esempio — in una consegna reale, qui arriverebbero
+      gli ordini effettivi dal checkout.
+    </p>
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="wrap">
+    <div class="filters">
+      <button type="button" class="filter-chip" [class.on]="filter() === 'tutti'" (click)="filter.set('tutti')">
+        Tutti ({{ counts()['tutti'] }})
+      </button>
+      <button type="button" class="filter-chip" [class.on]="filter() === 'lavorazione'" (click)="filter.set('lavorazione')">
+        In lavorazione ({{ counts()['lavorazione'] }})
+      </button>
+      <button type="button" class="filter-chip" [class.on]="filter() === 'transito'" (click)="filter.set('transito')">
+        In transito ({{ counts()['transito'] }})
+      </button>
+      <button type="button" class="filter-chip" [class.on]="filter() === 'consegnato'" (click)="filter.set('consegnato')">
+        Consegnati ({{ counts()['consegnato'] }})
+      </button>
+      <button type="button" class="filter-chip" [class.on]="filter() === 'reso'" (click)="filter.set('reso')">
+        Resi ({{ counts()['reso'] }})
+      </button>
+    </div>
+
+    <div class="manifest-wrap">
+      <table class="manifest-table">
+        <thead>
+          <tr>
+            <th>Ordine</th>
+            <th>Data</th>
+            <th>Cliente</th>
+            <th>Città</th>
+            <th>Prodotti</th>
+            <th>Totale</th>
+            <th>Stato</th>
+            <th>Tracking</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of filtered(); track order.id) {
+            <tr>
+              <td>{{ order.id }}</td>
+              <td>{{ order.date }}</td>
+              <td>{{ order.customer }}</td>
+              <td>{{ order.city }}</td>
+              <td style="max-width: 240px">{{ order.items }}</td>
+              <td>{{ order.total | number: '1.2-2' : 'it' }} €</td>
+              <td><span [class]="statusClass(order.status)">{{ statusLabel[order.status] }}</span></td>
+              <td>{{ order.tracking ?? '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

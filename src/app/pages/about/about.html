@@ -1,0 +1,78 @@
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--hazard">Il Marchio</p>
+    <h1 class="display--page" style="margin-top: 16px; max-width: 15ch">
+      Da un quaderno del ’68, <em>non da un business plan.</em>
+    </h1>
+    <p class="prose" style="margin-top: 24px">
+      Piccantomane nasce a Diamante, sulla costa tirrenica calabrese — la città che ogni
+      settembre ospita il Festival del Peperoncino. Non è una coincidenza scelta a tavolino:
+      è dove Vincenzo Le Rose ha venduto la prima bottiglia, porta a porta, prima ancora di
+      avere un'etichetta stampata.
+    </p>
+  </div>
+</section>
+
+<section class="section" appReveal>
+  <div class="wrap">
+    <div class="section__head">
+      <h2 class="display--sm">Tre Generazioni</h2>
+      <p class="mono" style="color: var(--ink-faint)">Chi c'è dietro le quattro linee.</p>
+    </div>
+
+    <div class="cols cols--3">
+      @for (founder of founders; track founder.name) {
+        <article class="card" style="border-top: 1px solid var(--line-strong); padding-top: 18px">
+          <p class="eyebrow">{{ founder.role }}</p>
+          <h3 class="display--sm" style="margin: 10px 0 14px; font-size: clamp(22px, 2.8vw, 30px)">
+            {{ founder.name }}
+          </h3>
+          <p class="prose" style="font-size: 15px">{{ founder.note }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" appReveal>
+  <div class="wrap">
+    <div class="section__head">
+      <h2 class="display--sm">Come Lavoriamo</h2>
+      <p class="prose" style="font-size: 14.5px">Tre regole, e nessuna è per lo scaffale.</p>
+    </div>
+
+    <div class="cols cols--3">
+      @for (rule of principles; track rule.num) {
+        <div>
+          <p class="mono" style="color: var(--hazard)">{{ rule.num }}</p>
+          <h3 class="display--sm" style="margin: 10px 0 14px; font-size: clamp(22px, 2.8vw, 30px)">
+            {{ rule.title }}
+          </h3>
+          <p class="prose" style="font-size: 15px">{{ rule.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section" appReveal>
+  <div class="wrap">
+    <div class="section__head">
+      <h2 class="display--sm">Le Quattro Linee</h2>
+      <p class="mono" style="color: var(--ink-faint)">Un metodo diverso per ogni etichetta.</p>
+    </div>
+
+    <dl class="spec">
+      @for (line of lines; track line.id) {
+        <div>
+          <dt>{{ line.name }}</dt>
+          <dd>{{ line.method }}</dd>
+        </div>
+      }
+    </dl>
+
+    <p style="margin-top: 28px">
+      <a class="btn btn--danger" routerLink="/negozio">Vai al negozio</a>
+    </p>
+  </div>
+</section>

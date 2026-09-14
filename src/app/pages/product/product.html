@@ -1,0 +1,152 @@
+@let p = product();
+
+@if (p) {
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="cols cols--aside" style="align-items: start">
+        <app-bottle-viewer [product]="p" />
+
+        <div class="stack">
+          <div>
+            <p class="eyebrow eyebrow--hazard">{{ line()?.name }} · Lotto {{ p.lot }}</p>
+            <h1 class="display" style="margin: 16px 0 12px; font-size: clamp(38px, 6vw, 68px)">{{ p.name }}</h1>
+            <p class="lede" style="color: var(--ink-soft)">{{ p.tagline }}</p>
+          </div>
+
+          <div class="row">
+            <span [class]="'hazard-badge hazard-badge--' + p.hazardClass">Classe di rischio {{ roman() }}</span>
+            <span class="mono" style="color: var(--ink-faint)">{{ p.shu | number: '1.0-0' : 'it' }} SHU</span>
+          </div>
+
+          <p class="prose">{{ p.description }}</p>
+
+          <div>
+            <p class="eyebrow" style="margin-bottom: 10px">Formato</p>
+            <div class="format-picker">
+              @for (format of p.formats; track format.size) {
+                <button
+                  type="button"
+                  class="format-option"
+                  [class.on]="selectedSize() === format.size"
+                  (click)="selectFormat(format.size)"
+                >
+                  <strong>{{ format.size }}</strong>
+                  <span>{{ format.price | number: '1.2-2' : 'it' }} €</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="row" style="gap: 16px">
+            <button type="button" class="btn btn--danger" (click)="addToCart()">
+              Aggiungi al carrello — {{ selectedFormat()?.price | number: '1.2-2' : 'it' }} €
+            </button>
+            @if (justAdded()) {
+              <span class="mono" style="color: var(--ink-soft)">✓ Aggiunto al registro</span>
+            }
+          </div>
+
+          <div class="warning-box">
+            <span class="warning-box__icon">!</span>
+            <p>{{ p.warning }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" appReveal>
+    <div class="wrap">
+      <div class="cols cols--aside" style="align-items: center">
+        <app-heat-gauge [shu]="p.shu" />
+        <div class="stack">
+          <p class="eyebrow" style="color: rgba(243,236,216,.55)">Perché lo SHU</p>
+          <p class="prose" style="color: rgba(243,236,216,.82)">
+            L'unità Scoville misura quanta capsaicina serve diluire prima che smetta di
+            bruciare. Non è un'opinione del produttore: è un dato di laboratorio, e lo
+            mostriamo per intero invece di tradurlo in "piccante" o "molto piccante".
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" appReveal>
+    <div class="wrap">
+      <div class="cols cols--aside">
+        <div>
+          <p class="eyebrow" style="margin-bottom: 16px">Diamante di degustazione</p>
+          <app-hazard-diamond [profile]="p.profile" />
+        </div>
+
+        <div class="stack">
+          <div>
+            <p class="eyebrow" style="margin-bottom: 10px">Abbinamenti</p>
+            <ul class="foot-list" style="color: var(--ink-soft)">
+              @for (pairing of p.pairings; track pairing) {
+                <li>— {{ pairing }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" appReveal>
+    <div class="wrap">
+      <p class="eyebrow" style="margin-bottom: 14px">Scheda di sicurezza</p>
+      <dl class="spec">
+        <div>
+          <dt>Denominazione</dt>
+          <dd>{{ line()?.name }}</dd>
+        </div>
+        <div>
+          <dt>Peperoncini</dt>
+          <dd>{{ p.peppers }}</dd>
+        </div>
+        <div>
+          <dt>Ingredienti</dt>
+          <dd>{{ p.ingredients.join(', ') }}</dd>
+        </div>
+        <div>
+          <dt>Metodo</dt>
+          <dd>{{ line()?.method }}</dd>
+        </div>
+        <div>
+          <dt>Lotto</dt>
+          <dd>{{ p.lot }}</dd>
+        </div>
+        <div>
+          <dt>Formati disponibili</dt>
+          <dd>{{ p.formats.map(f => f.size).join(' · ') }}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  @if (related().length > 0) {
+    <section class="section" appReveal>
+      <div class="wrap">
+        <div class="section__head">
+          <h2 class="display--sm">Stessa Linea</h2>
+          <p class="mono" style="color: var(--ink-faint)">Altre etichette dalla {{ line()?.name }}.</p>
+        </div>
+        <div class="grid">
+          @for (item of related(); track item.slug) {
+            <app-product-card [product]="item" />
+          }
+        </div>
+      </div>
+    </section>
+  }
+} @else {
+  <section class="section">
+    <div class="wrap">
+      <h1 class="display--sm">Prodotto non trovato</h1>
+      <p style="margin-top: 20px">
+        <a class="btn btn--danger" routerLink="/negozio">Torna al negozio</a>
+      </p>
+    </div>
+  </section>
+}

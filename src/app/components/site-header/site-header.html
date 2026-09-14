@@ -1,0 +1,42 @@
+<div class="hazard-stripe hazard-stripe--thin"></div>
+
+<header class="masthead">
+  <div class="wrap masthead__inner">
+    <a class="wordmark" routerLink="/">Piccant<span>o</span>mane<small>Diamante · Calabria</small></a>
+
+    <nav class="masthead__nav">
+      <a routerLink="/negozio" routerLinkActive="active">Negozio</a>
+      <a routerLink="/il-marchio" routerLinkActive="active">Il Marchio</a>
+      <a routerLink="/spedizioni" routerLinkActive="active">Spedizioni</a>
+      <a routerLink="/contatti" routerLinkActive="active">Contatti</a>
+    </nav>
+
+    <div class="masthead__tools">
+      <a class="cart-btn" routerLink="/carrello">
+        Carrello
+        @if (cart.count() > 0) {
+          <span class="cart-btn__count">{{ cart.count() }}</span>
+        }
+      </a>
+      <button class="menu-toggle" type="button" (click)="toggleMenu(true)" aria-label="Apri il menu">
+        ☰
+      </button>
+    </div>
+  </div>
+</header>
+
+@if (menuOpen()) {
+  <div class="mobile-menu" role="dialog" aria-modal="true">
+    <div class="wrap mobile-menu__bar">
+      <span class="wordmark">Piccant<span>o</span>mane</span>
+      <button class="menu-toggle" type="button" (click)="toggleMenu(false)" aria-label="Chiudi il menu">✕</button>
+    </div>
+    <nav class="wrap mobile-menu__list">
+      <a routerLink="/negozio" (click)="toggleMenu(false)">Negozio</a>
+      <a routerLink="/il-marchio" (click)="toggleMenu(false)">Il Marchio</a>
+      <a routerLink="/spedizioni" (click)="toggleMenu(false)">Spedizioni</a>
+      <a routerLink="/contatti" (click)="toggleMenu(false)">Contatti</a>
+      <a routerLink="/registro-ordini" (click)="toggleMenu(false)">Registro Ordini</a>
+    </nav>
+  </div>
+}

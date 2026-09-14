@@ -1,0 +1,179 @@
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--hazard">Dichiarazione di spedizione</p>
+    <h1 class="display--page" style="margin-top: 16px; font-size: clamp(38px, 6vw, 64px)">Checkout.</h1>
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="wrap">
+    @if (confirmedOrder(); as order) {
+      <div class="notice" style="max-width: 640px">
+        <p class="display--sm" style="font-size: 26px; margin-bottom: 14px">Ordine registrato ✓</p>
+        <p style="margin-bottom: 6px">Numero d'ordine: <strong>{{ order.id }}</strong></p>
+        <p style="margin-bottom: 18px">Consegna stimata: <strong>{{ order.eta }}</strong></p>
+
+        <div class="spec" style="margin-bottom: 18px">
+          @for (line of order.lines; track line.slug + line.size) {
+            <div>
+              <dt>{{ line.name }} — {{ line.size }} ×{{ line.qty }}</dt>
+              <dd>{{ line.price * line.qty | number: '1.2-2' : 'it' }} €</dd>
+            </div>
+          }
+        </div>
+
+        <p style="font-family: var(--display); font-size: 22px; margin-bottom: 18px">
+          Totale: {{ order.total | number: '1.2-2' : 'it' }} €
+        </p>
+
+        <p style="margin-bottom: 18px; font-size: 12px; opacity: 0.75">
+          Progetto dimostrativo: nessun addebito reale è stato effettuato e nessuna email è
+          stata inviata davvero.
+        </p>
+
+        <a class="btn btn--danger" routerLink="/negozio">Torna al negozio</a>
+      </div>
+    } @else if (cart.items().length === 0) {
+      <div class="notice" style="max-width: 52ch">
+        Il carrello è vuoto: non c'è nulla da spedire.
+        <br /><br />
+        <a class="btn btn--danger" routerLink="/negozio">Vai al negozio</a>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="cols cols--aside" style="align-items: start">
+          <div class="stack" style="gap: 34px">
+            <div>
+              <p class="eyebrow" style="margin-bottom: 16px">Destinatario</p>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="co-nome">Nome</label>
+                  <input id="co-nome" formControlName="nome" autocomplete="given-name" />
+                  @if (form.controls.nome.touched && form.controls.nome.invalid) {
+                    <span class="err">Campo obbligatorio</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-cognome">Cognome</label>
+                  <input id="co-cognome" formControlName="cognome" autocomplete="family-name" />
+                  @if (form.controls.cognome.touched && form.controls.cognome.invalid) {
+                    <span class="err">Campo obbligatorio</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-email">Email</label>
+                  <input id="co-email" type="email" formControlName="email" autocomplete="email" />
+                  @if (form.controls.email.touched && form.controls.email.invalid) {
+                    <span class="err">Indirizzo non valido</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-tel">Telefono</label>
+                  <input id="co-tel" type="tel" formControlName="telefono" autocomplete="tel" />
+                  @if (form.controls.telefono.touched && form.controls.telefono.invalid) {
+                    <span class="err">Campo obbligatorio</span>
+                  }
+                </div>
+                <div class="field field--full">
+                  <label for="co-indirizzo">Indirizzo</label>
+                  <input id="co-indirizzo" formControlName="indirizzo" autocomplete="street-address" />
+                  @if (form.controls.indirizzo.touched && form.controls.indirizzo.invalid) {
+                    <span class="err">Campo obbligatorio</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-citta">Città</label>
+                  <input id="co-citta" formControlName="citta" autocomplete="address-level2" />
+                  @if (form.controls.citta.touched && form.controls.citta.invalid) {
+                    <span class="err">Campo obbligatorio</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-cap">CAP</label>
+                  <input id="co-cap" formControlName="cap" autocomplete="postal-code" inputmode="numeric" />
+                  @if (form.controls.cap.touched && form.controls.cap.invalid) {
+                    <span class="err">5 cifre</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-prov">Provincia</label>
+                  <input id="co-prov" formControlName="provincia" maxlength="2" style="text-transform: uppercase" />
+                  @if (form.controls.provincia.touched && form.controls.provincia.invalid) {
+                    <span class="err">Sigla, es. CS</span>
+                  }
+                </div>
+                <div class="field field--full">
+                  <label for="co-note">Note per la consegna (opzionale)</label>
+                  <textarea id="co-note" rows="2" formControlName="note"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p class="eyebrow" style="margin-bottom: 16px">Pagamento — modalità dimostrativa</p>
+              <div class="warning-box" style="margin-bottom: 20px">
+                <span class="warning-box__icon">i</span>
+                <p>
+                  Nessun gateway di pagamento reale è collegato. Inserisci pure dati inventati:
+                  questo modulo non addebita nulla e non li conserva.
+                </p>
+              </div>
+              <div class="form-grid">
+                <div class="field field--full">
+                  <label for="co-card">Numero carta (demo)</label>
+                  <input id="co-card" formControlName="cardNumber" inputmode="numeric" placeholder="4242 4242 4242 4242" />
+                  @if (form.controls.cardNumber.touched && form.controls.cardNumber.invalid) {
+                    <span class="err">Numero non valido</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-exp">Scadenza</label>
+                  <input id="co-exp" formControlName="cardExpiry" placeholder="MM/AA" />
+                  @if (form.controls.cardExpiry.touched && form.controls.cardExpiry.invalid) {
+                    <span class="err">Formato MM/AA</span>
+                  }
+                </div>
+                <div class="field">
+                  <label for="co-cvc">CVC</label>
+                  <input id="co-cvc" formControlName="cardCvc" inputmode="numeric" placeholder="123" />
+                  @if (form.controls.cardCvc.touched && form.controls.cardCvc.invalid) {
+                    <span class="err">3 o 4 cifre</span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <label class="check">
+              <input type="checkbox" formControlName="consent" />
+              <span>Confermo i dati inseriti e accetto le condizioni di vendita (demo).</span>
+            </label>
+          </div>
+
+          <div>
+            <div class="totals">
+              <div class="totals__row">
+                <span>Subtotale</span>
+                <span>{{ cart.subtotal() | number: '1.2-2' : 'it' }} €</span>
+              </div>
+              <div class="totals__row">
+                <span>Spedizione</span>
+                <span>{{ shippingCost() === 0 ? 'Gratuita' : (shippingCost() | number: '1.2-2' : 'it') + ' €' }}</span>
+              </div>
+              <div class="totals__row totals__row--grand">
+                <span>Totale</span>
+                <span>{{ total() | number: '1.2-2' : 'it' }} €</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn--danger btn--block" style="margin-top: 20px">
+              Conferma ordine (demo)
+            </button>
+            <a class="btn btn--ghost btn--block" style="margin-top: 10px" routerLink="/carrello">
+              Torna al carrello
+            </a>
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+</section>

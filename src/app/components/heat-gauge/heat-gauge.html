@@ -1,0 +1,26 @@
+<div class="hg">
+  <svg viewBox="0 0 400 210" role="img" [attr.aria-label]="'Scala Scoville: ' + shu() + ' unità, fascia ' + band().label">
+    <!-- fascia dell'arco, colorata per soglie -->
+    @for (arc of arcBands; track arc.cls) {
+      <path [attr.d]="arc.d" fill="none" [class]="'hg-arc ' + arc.cls" />
+    }
+
+    <!-- tacche di riferimento: pepe noto → posizione sull'arco -->
+    @for (tick of ticks; track tick.label) {
+      <line [attr.x1]="tick.inner.x" [attr.y1]="tick.inner.y" [attr.x2]="tick.outer.x" [attr.y2]="tick.outer.y" class="hg-tick" />
+      <text [attr.x]="tick.labelAt.x" [attr.y]="tick.labelAt.y" text-anchor="middle" class="hg-tick-label">
+        {{ tick.label }}
+      </text>
+    }
+
+    <!-- perno e ago -->
+    <line [attr.x1]="center.x" [attr.y1]="center.y" [attr.x2]="needleTip().x" [attr.y2]="needleTip().y" class="hg-needle" />
+    <circle [attr.cx]="center.x" [attr.cy]="center.y" r="9" class="hg-pivot" />
+  </svg>
+
+  <div class="hg-readout">
+    <p class="eyebrow">Gradazione Scoville</p>
+    <p class="hg-readout__value">{{ shu() | number: '1.0-0' : 'it' }} <span>SHU</span></p>
+    <span [class]="'hazard-badge ' + band().cls">{{ band().label }}</span>
+  </div>
+</div>

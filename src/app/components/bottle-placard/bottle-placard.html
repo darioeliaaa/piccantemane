@@ -1,0 +1,39 @@
+<svg viewBox="0 0 200 380" role="img" [attr.aria-label]="product().name + ' — etichetta prodotto'" class="bp">
+  <defs>
+    <pattern
+      [attr.id]="patternId()"
+      width="12"
+      height="12"
+      patternTransform="rotate(45)"
+      patternUnits="userSpaceOnUse"
+    >
+      <rect width="12" height="12" class="bp-stripe-bg" />
+      <rect width="6" height="12" class="bp-stripe-fg" />
+    </pattern>
+  </defs>
+
+  <!-- tappo -->
+  <rect x="78" y="6" width="44" height="24" rx="3" class="bp-cap" />
+  <line x1="82" y1="13" x2="118" y2="13" class="bp-ridge" />
+  <line x1="82" y1="19" x2="118" y2="19" class="bp-ridge" />
+  <line x1="82" y1="25" x2="118" y2="25" class="bp-ridge" />
+
+  <!-- collo -->
+  <path d="M80,30 L120,30 L136,64 L64,64 Z" [attr.fill]="product().color" />
+
+  <!-- corpo -->
+  <rect x="50" y="58" width="100" height="308" rx="18" [attr.fill]="product().color" />
+  <rect x="62" y="74" width="12" height="270" rx="6" class="bp-highlight" />
+
+  <!-- fascia etichetta -->
+  <rect x="50" y="196" width="100" height="14" [attr.fill]="'url(#' + patternId() + ')'" />
+  <rect x="50" y="210" width="100" height="102" class="bp-label" />
+  <rect x="50" y="210" width="100" height="102" class="bp-label-border" />
+
+  <text x="100" y="230" text-anchor="middle" class="bp-label-eyebrow">Classe di rischio</text>
+  <text x="100" y="278" text-anchor="middle" class="bp-label-roman">{{ roman() }}</text>
+  <line x1="66" y1="288" x2="134" y2="288" class="bp-label-rule" />
+  <text x="100" y="303" text-anchor="middle" class="bp-label-line">{{ lineAbbr() }}</text>
+
+  <rect x="50" y="312" width="100" height="10" [attr.fill]="'url(#' + patternId() + ')'" />
+</svg>

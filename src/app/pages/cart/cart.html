@@ -1,0 +1,84 @@
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--hazard">Registro di carico</p>
+    <h1 class="display--page" style="margin-top: 16px; font-size: clamp(38px, 6vw, 64px)">Il tuo carrello.</h1>
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="wrap">
+    @if (cart.items().length === 0) {
+      <div class="notice" style="max-width: 52ch">
+        Il carrello è vuoto — nessuna sostanza in attesa di spedizione.
+        <br /><br />
+        <a class="btn btn--danger" routerLink="/negozio">Vai al negozio</a>
+      </div>
+    } @else {
+      <div class="cols cols--aside" style="align-items: start">
+        <div>
+          @for (line of cart.items(); track line.slug + line.size) {
+            <div class="cart-line">
+              <div class="cart-line__swatch" [style.background]="line.color"></div>
+
+              <div>
+                <p style="font-weight: 600">{{ line.name }}</p>
+                <p class="mono" style="font-size: 12px; color: var(--ink-faint); margin-top: 4px">
+                  {{ line.size }} — {{ line.price | number: '1.2-2' : 'it' }} € cad.
+                </p>
+              </div>
+
+              <div class="qty-stepper" style="margin-top: 12px">
+                <button type="button" (click)="cart.setQty(line.slug, line.size, line.qty - 1)" aria-label="Diminuisci quantità">−</button>
+                <span>{{ line.qty }}</span>
+                <button type="button" (click)="cart.setQty(line.slug, line.size, line.qty + 1)" aria-label="Aumenta quantità">+</button>
+              </div>
+
+              <div class="row" style="justify-content: flex-end; margin-top: 12px; gap: 14px">
+                <span class="mono" style="font-size: 14px">{{ line.price * line.qty | number: '1.2-2' : 'it' }} €</span>
+                <button type="button" class="btn btn--ghost" style="padding: 6px 10px" (click)="cart.remove(line.slug, line.size)" aria-label="Rimuovi">
+                  ✕
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (cart.hasReaper()) {
+            <div class="warning-box" style="margin-top: 24px">
+              <span class="warning-box__icon">!</span>
+              <p>{{ shipping.extremeNote }}</p>
+            </div>
+          }
+        </div>
+
+        <div>
+          <div class="totals">
+            <div class="totals__row">
+              <span>Subtotale</span>
+              <span>{{ cart.subtotal() | number: '1.2-2' : 'it' }} €</span>
+            </div>
+            <div class="totals__row">
+              <span>Spedizione</span>
+              <span>{{ shippingCost() === 0 ? 'Gratuita' : (shippingCost() | number: '1.2-2' : 'it') + ' €' }}</span>
+            </div>
+            @if (missingForFree() > 0) {
+              <p class="mono" style="font-size: 11.5px; color: var(--ink-faint)">
+                Aggiungi {{ missingForFree() | number: '1.2-2' : 'it' }} € per la spedizione gratuita.
+              </p>
+            }
+            <div class="totals__row totals__row--grand">
+              <span>Totale</span>
+              <span>{{ total() | number: '1.2-2' : 'it' }} €</span>
+            </div>
+          </div>
+
+          <a class="btn btn--danger btn--block" style="margin-top: 20px" routerLink="/checkout">
+            Procedi alla spedizione
+          </a>
+          <a class="btn btn--ghost btn--block" style="margin-top: 10px" routerLink="/negozio">
+            Continua gli acquisti
+          </a>
+        </div>
+      </div>
+    }
+  </div>
+</section>

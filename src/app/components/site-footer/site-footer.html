@@ -1,0 +1,52 @@
+<div class="hazard-stripe"></div>
+
+<div class="wrap foot-grid">
+  <section>
+    <p class="eyebrow">{{ brand.name }}</p>
+    <p style="margin: 14px 0 4px; max-width: 38ch; font-size: 15px; line-height: 1.65; color: rgba(243,236,216,.82)">
+      Salse piccanti artigianali dal {{ brand.founded }}, da Diamante — la Città del Peperoncino.
+    </p>
+    <div class="foot-list">
+      <span>{{ brand.legalName }}</span>
+      <span>{{ brand.street }} — {{ brand.postalCode }} {{ brand.city }} ({{ brand.province }})</span>
+      <a [href]="phoneHref">{{ brand.phone }}</a>
+      <a [href]="'mailto:' + brand.email">{{ brand.email }}</a>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Negozio</p>
+    <nav class="foot-list">
+      @for (line of lines; track line.id) {
+        <a [routerLink]="['/negozio']" [queryParams]="{ linea: line.id }">{{ line.name }}</a>
+      }
+    </nav>
+  </section>
+
+  <section>
+    <p class="eyebrow">Azienda</p>
+    <nav class="foot-list">
+      <a routerLink="/il-marchio">Il Marchio</a>
+      <a routerLink="/spedizioni">Spedizioni e Resi</a>
+      <a routerLink="/contatti">Contatti</a>
+      <a routerLink="/registro-ordini">Registro Ordini ↗</a>
+    </nav>
+  </section>
+
+  <section>
+    <p class="eyebrow">Avvertenza</p>
+    <p class="mono" style="margin-top: 14px; line-height: 1.7; color: rgba(243,236,216,.7)">
+      I prodotti della Linea Reaper superano ampiamente la soglia di piccantezza dei
+      condimenti comuni. Leggere l'etichetta prima dell'uso.
+    </p>
+  </section>
+</div>
+
+<div class="wrap foot-bottom">
+  <span>© {{ year }} {{ brand.legalName }} — P.IVA {{ brand.vat }}</span>
+  <span>Progetto dimostrativo — azienda, dati e contatti sono di fantasia.</span>
+  <span>
+    Sito realizzato da
+    <a href="https://www.darioelia.it" target="_blank" rel="noopener">Dario Elia</a>
+  </span>
+</div>

@@ -1,0 +1,53 @@
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--hazard">Spedizioni e Resi</p>
+    <h1 class="display--page" style="margin-top: 16px; max-width: 15ch">Ogni pacco parte da Diamante.</h1>
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="wrap">
+    <dl class="spec">
+      <div>
+        <dt>Costo standard</dt>
+        <dd>{{ shipping.standardCost }} € — Gratuita sopra i {{ shipping.freeAbove }} €</dd>
+      </div>
+      <div>
+        <dt>Tempi di consegna</dt>
+        <dd>{{ shipping.days }}, corriere espresso</dd>
+      </div>
+      <div>
+        <dt>Zone servite</dt>
+        <dd>Italia, isole comprese (+1–2 giorni per Sicilia e Sardegna)</dd>
+      </div>
+      <div>
+        <dt>Linea Reaper</dt>
+        <dd>{{ shipping.extremeNote }}</dd>
+      </div>
+      <div>
+        <dt>Reso</dt>
+        <dd>14 giorni dalla consegna per prodotti sigillati e non aperti, sigillo di garanzia integro</dd>
+      </div>
+      <div>
+        <dt>Prodotti non resi</dt>
+        <dd>Bottiglie aperte o con sigillo rimosso, per ovvie ragioni igieniche</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="warning-box">
+      <span class="warning-box__icon">i</span>
+      <p>
+        Questo è un progetto dimostrativo: nessuna spedizione reale viene effettuata e nessun
+        pagamento viene addebitato. I tempi e i costi sopra sono realistici, non funzionanti.
+      </p>
+    </div>
+
+    <p style="margin-top: 26px">
+      <a class="btn btn--danger" routerLink="/negozio">Torna al negozio</a>
+    </p>
+  </div>
+</section>

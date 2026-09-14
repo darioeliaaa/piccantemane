@@ -1,0 +1,1452 @@
+/* =========================================================================
+   PICCANTOMANE — sistema di design
+   L'idea: un laboratorio di sostanze pericolose nel buio, non una brochure
+   gourmet su carta chiara. Fondo quasi nero, pannelli di vetro scuro,
+   accenti al neon (ambra di sicurezza, rosso pericolo) che si illuminano
+   come le spie di un impianto acceso di notte. Le etichette dei prodotti
+   restano di carta chiara — è la carta vera stampata sulla bottiglia, non
+   l'interfaccia — tutto il resto vive nel buio.
+   ========================================================================= */
+
+:root {
+  /* Pagina e superfici. I valori sono distanziati in luminosità percepita,
+     non "a occhio": tra pagina e card ci sono ~12 punti di L*, il minimo
+     perché una superficie si stacchi su qualsiasi schermo e non solo su un
+     pannello buono in una stanza buia. */
+  --void: #0b0908;
+  --void-deep: #050403;
+
+  /* Pannelli: card, bottoni, campi */
+  --panel: #302619;
+  --panel-high: #423527;
+  --panel-low: #1d1710;
+
+  /* Testo e bordi sulla pagina scura */
+  --ink: #fbf6ec;
+  --ink-soft: rgba(251, 246, 236, 0.82);
+  --ink-faint: rgba(251, 246, 236, 0.6);
+
+  --line: rgba(251, 246, 236, 0.16);
+  --line-mid: rgba(251, 246, 236, 0.3);
+  --line-strong: rgba(251, 246, 236, 0.5);
+
+  /* Carta fisica — l'etichetta vera sulla bottiglia, sempre chiara */
+  --paper: #f3ecd8;
+  --paper-high: #faf6ea;
+  --paper-low: #e8dfc4;
+  --paper-ink: #171310;
+
+  /* Neon */
+  --hazard: #ffc21e;
+  --hazard-deep: #d99a00;
+  --hazard-glow: rgba(255, 194, 30, 0.5);
+  --danger: #ff4438;
+  --danger-deep: #cc2a20;
+  --danger-glow: rgba(255, 68, 56, 0.55);
+  --safe-blue: #3d96ff;
+
+  /* Colore della linea attiva — cambia per sezione, come --vino in Sìdero. */
+  --line-color: var(--danger);
+
+  --display: 'Anton', 'Arial Narrow', sans-serif;
+  --body: 'Archivo', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --gutter: clamp(18px, 4vw, 52px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--void);
+  background-image: radial-gradient(ellipse 1200px 800px at 50% -10%, rgba(255, 148, 30, 0.08), transparent 60%);
+  background-repeat: no-repeat;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.96;
+}
+
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  font: inherit;
+}
+
+::selection {
+  background: var(--hazard);
+  color: var(--void);
+}
+
+:focus-visible {
+  outline: 3px solid var(--hazard);
+  outline-offset: 2px;
+}
+
+/* --- bande di pericolo ----------------------------------------------------
+   Il motivo ricorrente: righe diagonali nero/ambra, come sul nastro dei
+   cantieri. È un oggetto fisico, non un elemento di interfaccia: resta
+   nero+ambra a prescindere dal tema della pagina. */
+.hazard-stripe {
+  height: 10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--void-deep),
+    var(--void-deep) 14px,
+    var(--hazard) 14px,
+    var(--hazard) 28px
+  );
+  box-shadow: 0 0 24px rgba(255, 194, 30, 0.2);
+}
+
+.hazard-stripe--thin {
+  height: 6px;
+}
+
+/* --- impalcatura ----------------------------------------------------------- */
+.shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+main {
+  flex: 1;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--hazard);
+  color: var(--void);
+  padding: 12px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.skip-link:focus {
+  left: 12px;
+  top: 12px;
+}
+
+/* --- tipografia -------------------------------------------------------- */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.eyebrow--hazard {
+  color: var(--danger);
+  text-shadow: 0 0 18px var(--danger-glow);
+}
+
+.placard-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border: 1.5px solid var(--paper-ink);
+  background: var(--paper-high);
+  color: var(--paper-ink);
+}
+
+.display {
+  font-size: clamp(42px, 8.6vw, 118px);
+}
+
+.display--sm {
+  font-size: clamp(30px, 4.6vw, 56px);
+}
+
+/* Titolo di pagina interna. Il corpo pieno di .display serve all'hero: su
+   una pagina di catalogo riempiva da solo mezzo schermo e spingeva i
+   prodotti sotto la piega — qui sotto il primo scroll ci deve già essere
+   merce, non tipografia. */
+.display--page {
+  font-size: clamp(32px, 5vw, 62px);
+  max-width: 18ch;
+}
+
+.display em {
+  font-style: normal;
+  color: var(--line-color);
+  text-shadow: 0 0 44px var(--danger-glow);
+}
+
+.lede {
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: clamp(19px, 2.2vw, 25px);
+  line-height: 1.4;
+  max-width: 30ch;
+}
+
+.prose {
+  max-width: 62ch;
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1em;
+}
+
+.prose strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+/* --- masthead ------------------------------------------------------------ */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(7, 5, 4, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 194, 30, 0.22);
+  box-shadow: 0 1px 30px rgba(255, 148, 30, 0.05);
+}
+
+.masthead__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 66px;
+  padding-block: 10px;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-size: clamp(22px, 3vw, 30px);
+  text-decoration: none;
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.1em;
+  white-space: nowrap;
+}
+
+.wordmark span {
+  color: var(--danger);
+  text-shadow: 0 0 20px var(--danger-glow);
+}
+
+.wordmark small {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-left: 12px;
+  font-weight: 400;
+}
+
+@media (max-width: 640px) {
+  .wordmark small {
+    display: none;
+  }
+}
+
+.masthead__nav {
+  display: none;
+  align-items: center;
+  gap: 22px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 900px) {
+  .masthead__nav {
+    display: flex;
+  }
+}
+
+.masthead__nav a {
+  text-decoration: none;
+  color: var(--ink-soft);
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.masthead__nav a:hover,
+.masthead__nav a.active {
+  color: var(--ink);
+  border-color: var(--hazard);
+}
+
+.masthead__tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cart-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  border: 1.5px solid var(--line-strong);
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.cart-btn:hover {
+  border-color: var(--hazard);
+  box-shadow: 0 0 22px rgba(255, 194, 30, 0.18);
+  background: rgba(255, 194, 30, 0.06);
+}
+
+.cart-btn__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: var(--paper-high);
+  font-size: 11px;
+  box-shadow: 0 0 14px var(--danger-glow);
+}
+
+.menu-toggle {
+  display: inline-flex;
+  border: 1.5px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  padding: 9px 12px;
+  cursor: pointer;
+}
+
+@media (min-width: 900px) {
+  .menu-toggle {
+    display: none;
+  }
+}
+
+/* --- menu mobile a tutta pagina ------------------------------------------ */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--void);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.mobile-menu__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 66px;
+  padding-block: 10px;
+  border-bottom: 1px solid rgba(255, 194, 30, 0.22);
+}
+
+.mobile-menu__list {
+  padding-block: 18px;
+}
+
+.mobile-menu__list a {
+  display: block;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--display);
+  font-size: clamp(28px, 8vw, 40px);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+/* --- controlli ------------------------------------------------------------ */
+.btn {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 0;
+  padding: 12px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--hazard);
+  border-color: var(--hazard);
+  color: var(--void);
+  box-shadow: 0 0 28px var(--hazard-glow);
+}
+
+.btn--danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--paper-high);
+  box-shadow: 0 0 22px var(--danger-glow);
+}
+
+.btn--danger:hover {
+  background: var(--danger-deep);
+  border-color: var(--danger-deep);
+  color: var(--paper-high);
+  box-shadow: 0 0 34px var(--danger-glow);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn--ghost {
+  border-color: var(--line-strong);
+  color: var(--ink-soft);
+  background: transparent;
+}
+
+/* --- sezioni -------------------------------------------------------------- */
+.section {
+  padding-block: clamp(44px, 6vw, 84px);
+  position: relative;
+}
+
+.section--tight {
+  padding-block: clamp(26px, 3.6vw, 46px);
+}
+
+.section__head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  padding-bottom: 18px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+@media (min-width: 860px) {
+  .section__head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 30ch);
+    gap: 28px;
+    align-items: baseline;
+  }
+}
+
+/* Un pannello recesso, più nero del fondo pagina — per dare ritmo senza
+   uscire dal linguaggio "buio" dominante. */
+.section--dark {
+  background: var(--void-deep);
+  box-shadow: inset 0 1px 0 rgba(255, 194, 30, 0.14), inset 0 -1px 0 rgba(255, 194, 30, 0.14);
+}
+
+/* --- griglia prodotti ------------------------------------------------------ */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line-strong);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 980px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.grid--4 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* --- card prodotto ----------------------------------------------------------
+   Ogni card è un banco illuminato: dietro la bottiglia c'è un alone del
+   colore reale di quella salsa (--glow, passato dal componente). È quello
+   che fa esplodere di colore la griglia invece di lasciare dodici rettangoli
+   neri tutti uguali — e al passaggio del mouse l'alone si alza. */
+.p-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  text-decoration: none;
+  color: var(--ink);
+  padding: 18px 18px 20px;
+  gap: 14px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.p-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    circle at 50% 40%,
+    color-mix(in srgb, var(--glow, var(--hazard)) 60%, transparent),
+    transparent 58%
+  );
+  opacity: 0.5;
+  transition: opacity 0.3s ease, transform 0.4s ease;
+}
+
+.p-card:hover {
+  background: var(--panel-high);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--glow, var(--hazard)) 70%, transparent);
+  z-index: 1;
+}
+
+.p-card:hover::before {
+  opacity: 0.92;
+  transform: scale(1.12);
+}
+
+.p-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.p-card__bottle {
+  height: 168px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.p-card__name {
+  font-size: clamp(19px, 2.2vw, 23px);
+  line-height: 1.05;
+}
+
+.p-card__tag {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  margin-top: 6px;
+}
+
+.p-card__foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.p-card__price {
+  font-family: var(--mono);
+  font-size: 14px;
+}
+
+/* --- classe di rischio (badge) — oggetto autonomo, non dipende dal tema --- */
+.hazard-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1.5px solid var(--paper-ink);
+  background: var(--hazard);
+  color: var(--paper-ink);
+  white-space: nowrap;
+}
+
+.hazard-badge--4,
+.hazard-badge--5 {
+  background: var(--danger);
+  color: var(--paper-high);
+  border-color: var(--danger-deep);
+}
+
+/* --- filtri negozio --------------------------------------------------------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.filter-chip {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 9px 15px;
+  border: 1.5px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.filter-chip.on {
+  background: var(--hazard);
+  border-color: var(--hazard);
+  color: var(--paper-ink);
+  box-shadow: 0 0 22px var(--hazard-glow);
+}
+
+/* --- manometro Scoville ---------------------------------------------------- */
+.hg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.hg-arc { stroke-width: 22; }
+.hg-arc--mild { stroke: #7a9b5c; }
+.hg-arc--med { stroke: var(--hazard); }
+.hg-arc--hot { stroke: #d9720f; }
+.hg-arc--extreme { stroke: var(--danger); }
+
+.hg-tick { stroke: rgba(244, 236, 216, 0.55); stroke-width: 2; }
+.hg-tick-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  fill: rgba(244, 236, 216, 0.72);
+  text-transform: uppercase;
+}
+
+.hg-needle { stroke: var(--paper-high); stroke-width: 4; stroke-linecap: round; }
+.hg-pivot { fill: var(--paper-high); stroke: var(--void); stroke-width: 2; }
+
+.hg-readout {
+  text-align: center;
+  margin-top: -18px;
+}
+
+.hg-readout__value {
+  font-family: var(--display);
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1;
+  margin: 6px 0 10px;
+}
+
+.hg-readout__value span {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+.hg-badge--mild { background: #7a9b5c; color: var(--paper-high); border-color: #7a9b5c; }
+.hg-badge--med { background: var(--hazard); color: var(--paper-ink); border-color: var(--paper-ink); }
+.hg-badge--hot { background: #d9720f; color: var(--paper-high); border-color: #d9720f; }
+.hg-badge--extreme { background: var(--danger); color: var(--paper-high); border-color: var(--danger); }
+
+/* --- bottiglia-etichetta: niente foto prodotto, solo forma e colore -------
+   Oggetto fisico: cappuccio nero, etichetta di carta chiara, indipendenti
+   dal tema della pagina — restano tali su fondo scuro o chiaro. */
+.bp {
+  width: 100%;
+  height: auto;
+  /* La bottiglia si illumina del proprio colore, non di un generico arancione:
+     --glow arriva dalla card che la contiene. */
+  filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 26px color-mix(in srgb, var(--glow, var(--hazard)) 75%, transparent));
+}
+
+.bp-cap { fill: var(--void-deep); }
+.bp-ridge { stroke: rgba(244, 236, 216, 0.35); stroke-width: 1.5; }
+.bp-highlight { fill: rgba(255, 255, 255, 0.22); }
+.bp-stripe-bg { fill: var(--void-deep); }
+.bp-stripe-fg { fill: var(--hazard); }
+.bp-label { fill: var(--paper-high); }
+.bp-label-border { fill: none; stroke: var(--paper-ink); stroke-width: 3; }
+.bp-label-rule { stroke: rgba(23, 19, 16, 0.35); stroke-width: 1; }
+.bp-label-eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--paper-ink);
+  opacity: 0.6;
+}
+.bp-label-roman {
+  font-family: var(--display);
+  font-size: 42px;
+  fill: var(--paper-ink);
+}
+.bp-label-line {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  fill: var(--paper-ink);
+  opacity: 0.75;
+}
+
+/* --- diamante di degustazione: colori delle losanghe, non attributi SVG grezzi
+   (var() dentro un attributo fill="" non è affidabile su tutti i browser). */
+.hd-quad--danger { fill: var(--danger); }
+.hd-quad--blue { fill: var(--safe-blue); }
+.hd-quad--paper { fill: var(--paper-high); }
+.hd-quad--hazard { fill: var(--hazard); }
+.hd-outline { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.hd-divider { stroke: var(--ink); stroke-width: 1.5; opacity: 0.7; }
+.hd-value { font-family: var(--display); font-size: 30px; text-anchor: middle; }
+.hd-value--light { fill: var(--paper-high); }
+.hd-value--dark { fill: var(--paper-ink); }
+
+.diamond-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin-top: 14px;
+}
+
+.diamond-legend div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.diamond-legend i {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--line-strong);
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+/* --- scheda di sicurezza (spec prodotto) ------------------------------------ */
+.spec {
+  border-top: 1px solid var(--line-strong);
+}
+
+.spec > div {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: 8px 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+
+@media (max-width: 540px) {
+  .spec > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+}
+
+.spec dt {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.spec dd {
+  margin: 0;
+  font-size: 15px;
+  min-width: 0;
+}
+
+/* --- selettore formato ------------------------------------------------------- */
+.format-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.format-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  border: 1.5px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  cursor: pointer;
+  min-width: 88px;
+  text-align: center;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.format-option.on {
+  background: var(--hazard);
+  border-color: var(--hazard);
+  color: var(--paper-ink);
+  box-shadow: 0 0 22px var(--hazard-glow);
+}
+
+.format-option strong {
+  font-family: var(--mono);
+  font-size: 14px;
+}
+
+.format-option span {
+  font-size: 11.5px;
+  opacity: 0.7;
+}
+
+/* --- avviso etichetta: adesivo fisico di carta, resta chiaro sempre ------- */
+.warning-box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 2px solid var(--paper-ink);
+  padding: 16px 18px;
+  color: var(--paper-ink);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--paper-high),
+    var(--paper-high) 14px,
+    var(--paper-low) 14px,
+    var(--paper-low) 28px
+  );
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.warning-box__icon {
+  flex: 0 0 auto;
+  font-family: var(--display);
+  font-size: 22px;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--paper-ink);
+  color: var(--paper-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hazard);
+}
+
+.warning-box p {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+/* --- carrello / righe -------------------------------------------------------- */
+.cart-line {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .cart-line {
+    grid-template-columns: 76px minmax(0, 1fr) auto auto;
+  }
+}
+
+.cart-line__swatch {
+  width: 64px;
+  height: 64px;
+  border: 1.5px solid var(--line-strong);
+}
+
+@media (min-width: 640px) {
+  .cart-line__swatch {
+    width: 76px;
+    height: 76px;
+  }
+}
+
+.qty-stepper {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1.5px solid var(--line-strong);
+  width: fit-content;
+}
+
+.qty-stepper button {
+  width: 34px;
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 16px;
+}
+
+.qty-stepper button:hover {
+  background: rgba(255, 194, 30, 0.12);
+}
+
+.qty-stepper span {
+  min-width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  border-left: 1.5px solid var(--line-strong);
+  border-right: 1.5px solid var(--line-strong);
+}
+
+/* --- riepilogo / totali -------------------------------------------------------- */
+.totals {
+  border-top: 1px solid var(--line-strong);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.totals__row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 14px;
+}
+
+.totals__row--grand {
+  font-family: var(--display);
+  font-size: 26px;
+  text-transform: uppercase;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+/* --- form ----------------------------------------------------------------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px 26px;
+}
+
+@media (min-width: 720px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+  font-family: var(--body);
+  font-size: 15.5px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 0;
+  padding: 11px 12px;
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--ink-faint);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--hazard);
+  box-shadow: 0 0 0 3px rgba(255, 194, 30, 0.14);
+}
+
+.field select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) calc(50% + 1px),
+    calc(100% - 9px) calc(50% + 1px);
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
+}
+
+.field select option {
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.field .err {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--danger);
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border: 1.5px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+}
+
+.check input:checked {
+  background: var(--danger);
+  border-color: var(--danger);
+  box-shadow: 0 0 14px var(--danger-glow);
+}
+
+.notice {
+  border: 1.5px solid var(--hazard);
+  padding: 18px 20px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  background: rgba(255, 194, 30, 0.05);
+  box-shadow: 0 0 40px rgba(255, 194, 30, 0.12);
+}
+
+/* --- manifesto ordini (backoffice) ------------------------------------------- */
+.manifest-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.manifest-table th {
+  text-align: left;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+
+.manifest-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.manifest-table tr:hover td {
+  background: rgba(255, 194, 30, 0.05);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1.5px solid var(--paper-ink);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-pill--transito {
+  background: var(--hazard);
+  color: var(--paper-ink);
+}
+
+.status-pill--consegnato {
+  background: #7a9b5c;
+  color: var(--paper-high);
+  border-color: #5c7a42;
+}
+
+.status-pill--lavorazione {
+  background: var(--paper-low);
+  color: var(--paper-ink);
+}
+
+.status-pill--reso {
+  background: var(--danger);
+  color: var(--paper-high);
+  border-color: var(--danger-deep);
+}
+
+.manifest-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line-strong);
+}
+
+/* --- comparsa allo scroll ------------------------------------------------ */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal.shown {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --- inclinazione 3D al passaggio del mouse (appTilt) --------------------- */
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+/* --- piede ----------------------------------------------------------------- */
+.site-foot {
+  background: var(--void-deep);
+  color: var(--ink);
+  margin-top: clamp(50px, 7vw, 90px);
+  border-top: 1px solid rgba(255, 194, 30, 0.18);
+}
+
+.site-foot a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-foot .eyebrow {
+  color: var(--ink-faint);
+}
+
+.foot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+  padding-block: clamp(40px, 6vw, 70px);
+}
+
+@media (min-width: 780px) {
+  .foot-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 1.1fr);
+    gap: 40px;
+  }
+}
+
+.foot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.foot-list a:hover {
+  color: var(--hazard);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.foot-bottom {
+  border-top: 1px solid var(--line);
+  padding-block: 18px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
+
+/* --- scena 3D (hero / visualizzatore bottiglia) --------------------------- */
+.scene3d {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.scene3d canvas {
+  display: block;
+  touch-action: none;
+}
+
+.hero-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-stage canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(7, 5, 4, 0.15) 0%, rgba(7, 5, 4, 0.55) 60%, var(--void) 100%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.bottle-viewer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-width: 460px;
+  margin: 0 auto;
+  cursor: grab;
+  isolation: isolate;
+}
+
+/* Il palco: senza, la bottiglia 3D galleggia in un vuoto nero. L'alone
+   prende il colore della salsa e le dà un fondo su cui staccarsi. */
+/* inset 0, non negativo: sporgendo dal contenitore l'alone allargava la
+   pagina di qualche pixel e su mobile compariva lo scroll orizzontale. */
+.bottle-viewer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 55% 60% at 50% 46%,
+    color-mix(in srgb, var(--glow, var(--hazard)) 62%, transparent),
+    transparent 68%
+  );
+}
+
+/* Un'ombra ellittica a terra, per ancorarla invece di lasciarla sospesa. */
+.bottle-viewer::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  width: 46%;
+  height: 26px;
+  transform: translateX(-50%);
+  z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75), transparent 70%);
+}
+
+.bottle-viewer:active {
+  cursor: grabbing;
+}
+
+.bottle-viewer canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.bottle-viewer__hint {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* --- utilità ------------------------------------------------------------- */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+}
+
+@media (min-width: 900px) {
+  .cols--aside {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+  .cols--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cols--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

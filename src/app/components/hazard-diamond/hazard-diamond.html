@@ -1,0 +1,29 @@
+<div [style.max-width]="size() === 'sm' ? '148px' : '220px'" style="margin: 0 auto; width: 100%">
+  <svg viewBox="0 0 200 200" role="img" aria-label="Diamante di degustazione">
+    <!-- quattro losanghe attorno al centro, geometria del diamante di classificazione -->
+    <polygon points="100,100 100,10 190,100" class="hd-quad hd-quad--danger" />
+    <polygon points="100,100 190,100 100,190" class="hd-quad hd-quad--blue" />
+    <polygon points="100,100 100,190 10,100" class="hd-quad hd-quad--paper" />
+    <polygon points="100,100 10,100 100,10" class="hd-quad hd-quad--hazard" />
+
+    <!-- contorno -->
+    <polygon points="100,10 190,100 100,190 10,100" class="hd-outline" />
+    <line x1="100" y1="10" x2="100" y2="190" class="hd-divider" />
+    <line x1="10" y1="100" x2="190" y2="100" class="hd-divider" />
+
+    <!-- valori -->
+    <text x="130" y="66" class="hd-value hd-value--light">{{ profile().piccantezza }}</text>
+    <text x="130" y="140" class="hd-value hd-value--light">{{ profile().aroma }}</text>
+    <text x="70" y="140" class="hd-value hd-value--dark">{{ profile().persistenza }}</text>
+    <text x="70" y="66" class="hd-value hd-value--dark">{{ profile().acidita }}</text>
+  </svg>
+
+  @if (size() === 'lg') {
+    <div class="diamond-legend">
+      <div><i style="background: var(--danger)"></i> Piccantezza — {{ profile().piccantezza }}/4</div>
+      <div><i style="background: var(--safe-blue)"></i> Aroma — {{ profile().aroma }}/4</div>
+      <div><i style="background: var(--hazard)"></i> Acidità — {{ profile().acidita }}/4</div>
+      <div><i style="background: var(--paper-high)"></i> Persistenza — {{ profile().persistenza }}/4</div>
+    </div>
+  }
+</div>

@@ -1,0 +1,79 @@
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="eyebrow eyebrow--hazard">Contatti</p>
+    <h1 class="display--page" style="margin-top: 16px; max-width: 14ch">Scrivici, senza formule di rito.</h1>
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="wrap">
+    <div class="cols cols--aside" style="align-items: start">
+      <div class="stack">
+        <div>
+          <p class="eyebrow" style="margin-bottom: 12px">Sede</p>
+          <p style="font-size: 16px; line-height: 1.8">
+            {{ brand.legalName }}<br />
+            {{ brand.street }}<br />
+            {{ brand.postalCode }} {{ brand.city }} ({{ brand.province }}) — {{ brand.country }}
+          </p>
+        </div>
+        <div>
+          <p class="eyebrow" style="margin-bottom: 12px">Diretti</p>
+          <p style="font-size: 16px; line-height: 1.9">
+            <a [href]="phoneHref">{{ brand.phone }}</a><br />
+            <a [href]="'mailto:' + brand.email">{{ brand.email }}</a>
+          </p>
+        </div>
+        <div class="warning-box">
+          <span class="warning-box__icon">i</span>
+          <p>Rispondiamo entro due giorni lavorativi — tre a settembre, durante il Festival del Peperoncino.</p>
+        </div>
+      </div>
+
+      <div>
+        @if (sent()) {
+          <p class="notice">Messaggio registrato. A presto.</p>
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form-grid">
+            <div class="field">
+              <label for="c-name">Nome</label>
+              <input id="c-name" formControlName="name" autocomplete="name" />
+              @if (form.controls.name.touched && form.controls.name.invalid) {
+                <span class="err">Campo obbligatorio</span>
+              }
+            </div>
+            <div class="field">
+              <label for="c-email">Email</label>
+              <input id="c-email" type="email" formControlName="email" autocomplete="email" />
+              @if (form.controls.email.touched && form.controls.email.invalid) {
+                <span class="err">Indirizzo non valido</span>
+              }
+            </div>
+            <div class="field field--full">
+              <label for="c-subject">Oggetto</label>
+              <select id="c-subject" formControlName="subject">
+                <option value="">—</option>
+                @for (subject of subjects; track subject) {
+                  <option [value]="subject">{{ subject }}</option>
+                }
+              </select>
+              @if (form.controls.subject.touched && form.controls.subject.invalid) {
+                <span class="err">Campo obbligatorio</span>
+              }
+            </div>
+            <div class="field field--full">
+              <label for="c-message">Messaggio</label>
+              <textarea id="c-message" rows="5" formControlName="message"></textarea>
+              @if (form.controls.message.touched && form.controls.message.invalid) {
+                <span class="err">Campo obbligatorio</span>
+              }
+            </div>
+            <div class="field--full">
+              <button type="submit" class="btn btn--danger">Invia</button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</section>

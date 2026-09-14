@@ -1,0 +1,25 @@
+<a
+  class="p-card"
+  appTilt
+  [style.--glow]="product().glow"
+  [routerLink]="['/prodotto', product().slug]"
+>
+  <div class="p-card__top">
+    <span [class]="'hazard-badge hazard-badge--' + product().hazardClass">Classe {{ roman() }}</span>
+    <span class="mono" style="color: var(--ink-faint); font-size: 11px">{{ product().shu | number: '1.0-0' : 'it' }} SHU</span>
+  </div>
+
+  <div class="p-card__bottle">
+    <app-bottle-placard [product]="product()" style="max-width: 92px" />
+  </div>
+
+  <div>
+    <h3 class="p-card__name">{{ product().name }}</h3>
+    <p class="p-card__tag">{{ product().tagline }}</p>
+  </div>
+
+  <div class="p-card__foot">
+    <span class="mono" style="color: var(--ink-faint); font-size: 11px">da</span>
+    <span class="p-card__price">{{ fromPrice() | number: '1.2-2' : 'it' }} €</span>
+  </div>
+</a>

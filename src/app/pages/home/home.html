@@ -1,0 +1,158 @@
+<section class="scene3d" style="min-height: min(920px, 92vh); display: flex; align-items: center">
+  <app-fire-field />
+  <div class="hero-scrim"></div>
+
+  <div class="wrap hero-content">
+    <div class="cols cols--aside" style="align-items: center">
+      <div>
+        <p class="eyebrow eyebrow--hazard">Diamante (CS) · Calabria — dal 1968</p>
+        <h1 class="display" style="margin-top: 20px">
+          Quattro linee.<br /><em>Dodici sostanze.</em><br />Zero scuse.
+        </h1>
+        <div class="stack" style="gap: 22px; margin-top: 26px">
+          <p class="prose">
+            Peperoncino di Diamante raccolto a mano, lavorato entro 48 ore. Ogni salsa ha una
+            classe di rischio in etichetta e un dato Scoville verificabile — non un peperoncino
+            disegnato con più o meno fiammelle.
+          </p>
+          <div class="row">
+            <a class="btn btn--danger" routerLink="/negozio">Vai al negozio</a>
+            <a class="btn" routerLink="/il-marchio">La nostra storia</a>
+          </div>
+        </div>
+      </div>
+
+      <app-bottle-viewer [product]="heroProduct" />
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="hazard-stripe hazard-stripe--thin" style="margin-bottom: 2px"></div>
+  <dl class="spec" style="border-top: none">
+    <div>
+      <dt>Dal</dt>
+      <dd class="display--sm" style="font-size: 28px">1968</dd>
+    </div>
+    <div>
+      <dt>Linee di produzione</dt>
+      <dd class="display--sm" style="font-size: 28px">4</dd>
+    </div>
+    <div>
+      <dt>SHU più alto</dt>
+      <dd class="display--sm" style="font-size: 28px">1.650.000</dd>
+    </div>
+    <div>
+      <dt>Bottiglie · Riserva Extrema</dt>
+      <dd class="display--sm" style="font-size: 28px">&lt; 200</dd>
+    </div>
+  </dl>
+</div>
+
+<section class="section" appReveal>
+  <div class="wrap">
+    <div class="section__head">
+      <h2 class="display--sm">Le Linee</h2>
+      <p class="mono" style="color: var(--ink-faint)">
+        Quattro metodi di lavorazione, quattro colori di etichetta.
+      </p>
+    </div>
+
+    <div class="cols cols--2" style="gap: 2px">
+      @for (line of lines; track line.id) {
+        <a
+          appTilt
+          [routerLink]="['/negozio']"
+          [queryParams]="{ linea: line.id }"
+          class="p-card"
+          style="text-decoration: none; color: inherit; border: 1px solid var(--line-strong); padding: 22px"
+        >
+          <div class="row" style="justify-content: space-between; margin-bottom: 12px">
+            <span class="placard-label">
+              <i style="display:inline-block; width:10px; height:10px; border:1px solid var(--paper-ink)" [style.background]="line.color"></i>
+              {{ line.name }}
+            </span>
+            <span class="mono" style="color: var(--ink-faint)">→</span>
+          </div>
+          <h3 class="display--sm" style="font-size: clamp(22px, 3vw, 30px)">{{ line.short }}</h3>
+          <p class="prose" style="margin-top: 12px; font-size: 14.5px">{{ line.description }}</p>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section" appReveal>
+  <div class="wrap">
+    <div class="section__head">
+      <h2 class="display--sm">In Etichetta</h2>
+      <p class="mono" style="color: var(--ink-faint)">Una selezione dalle quattro linee.</p>
+    </div>
+
+    <div class="grid">
+      @for (product of featured; track product.slug) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" appReveal>
+  <div class="wrap">
+    <div class="section__head">
+      <h2 class="display--sm">Il Diamante di Degustazione</h2>
+      <p class="prose" style="font-size: 14.5px">
+        Ogni scheda prodotto ha il suo. Non sostituisce lo SHU — quello resta il dato sulla
+        piccantezza — è il resto del gusto: aroma, acidità, persistenza, e sì, anche quanto la
+        piccantezza si fa sentire nell'insieme.
+      </p>
+    </div>
+
+    <div class="cols cols--aside" style="align-items: center">
+      <app-hazard-diamond [profile]="sampleProfile" />
+      <div class="stack">
+        <p class="prose">
+          Quattro losanghe, come sul diamante di classificazione delle sostanze chimiche.
+          <strong>In alto, il rosso</strong>, è quanto la
+          piccantezza domina il sorso. <strong>A destra, il blu</strong>,
+          l'intensità dell'aroma. <strong>In basso, il bianco</strong>,
+          quanto resta in bocca. <strong>A sinistra, il giallo</strong>,
+          l'acidità.
+        </p>
+        <p style="margin-top: 6px">
+          <a class="btn" routerLink="/negozio">
+            Leggi le schede complete
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" appReveal>
+  <div class="wrap">
+    <div class="cols cols--2">
+      <div>
+        <h2 class="display--sm">Diamante, Città del Peperoncino</h2>
+        <p class="prose" style="margin-top: 18px">
+          Ogni settembre Diamante ospita il Festival del Peperoncino: è lì che Vincenzo Le Rose
+          vendette la prima Diamante '68 porta a porta, prima ancora di avere un'etichetta
+          stampata. La ricetta non è cambiata da allora.
+        </p>
+        <p style="margin-top: 22px">
+          <a class="btn btn--ghost" routerLink="/il-marchio">La storia completa</a>
+        </p>
+      </div>
+      <div>
+        <h2 class="display--sm">Spedizione in tutta Italia</h2>
+        <p class="prose" style="margin-top: 18px">
+          Consegna in 3–5 giorni lavorativi, gratuita sopra i 45€. I formati della Linea Reaper
+          viaggiano in una scatola sigillata a parte — non per scenografia, per davvero.
+        </p>
+        <p style="margin-top: 22px">
+          <a class="btn btn--ghost" routerLink="/spedizioni">Dettagli spedizioni</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

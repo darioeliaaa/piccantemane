@@ -11,7 +11,10 @@ export const BRAND = {
   email: 'ordini@piccantomane.it',
   vat: 'IT 00000000000',
   founded: '1968',
-  siteUrl: 'https://piccantomane.vercel.app',
+  // Deve combaciare con il dominio reale del deploy: da qui passano
+  // canonical, og:url, sitemap e robots.txt. Il progetto Vercel è
+  // "piccantemane" (con la e), non "piccantomane" come il marchio.
+  siteUrl: 'https://piccantemane.vercel.app',
 };
 
 export const SHIPPING = {
